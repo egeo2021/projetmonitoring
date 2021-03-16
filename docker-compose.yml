@@ -105,7 +105,7 @@ services:
     volumes:
      - /etc/localtime:/etc/localtime:ro
      #- /etc/timezone:/etc/timezone:ro
-     - ./zbx_data/etc/nginx/sites-available/:/etc/nginx/conf.d/nginx.conf
+     - ./zbx_data/etc/nginx/zabbix/nginx.conf:/etc/zabbix/nginx.conf:ro
     deploy:
       <<: *template-deploy
     networks:
