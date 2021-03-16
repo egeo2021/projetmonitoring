@@ -1,0 +1,127 @@
+version: '3.7'
+
+x-deploy: &template-deploy 
+  replicas: 1 
+  restart_policy:
+    condition: on-failure
+  update_config:
+    parallelism: 1
+    delay: 10s
+
+services:
+  zabbix-server:
+    hostname: server
+    image: zabbix/zabbix-server-mysql:centos-5.2.0
+    env_file:
+     - ./envs/common.env
+     - ./envs/zbxserver.env
+     - ./envs/zbxdbmysql.env
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     #- /etc/timezone:/etc/timezone:ro
+     - ./zbx_data/var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
+     - ./zbx_data/usr/lib/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
+     - ./zbx_data/usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
+     - ./zbx_data/var/lib/zabbix/export:/var/lib/zabbix/export:rw
+     - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
+     - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+     - ./zbx_data/var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
+    ports:
+     - "10051:10051"
+    deploy:
+     resources:
+      limits:
+        cpus: '0.70'
+        memory: 1G
+      reservations:
+        cpus: '0.5'
+        memory: 512M
+     <<: *template-deploy
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65000
+      - net.ipv4.conf.all.accept_redirects=0
+      - net.ipv4.conf.all.secure_redirects=0
+      - net.ipv4.conf.all.send_redirects=0
+    networks:
+        net-monitorapp-backend:
+          aliases:
+            - server
+    restart: always
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:centos-5.2.0
+    hostname: web
+    depends_on:
+     - zabbix-server
+    env_file:
+     - ./envs/common.env
+     - ./envs/zbxfrontend.env
+     - ./envs/zbxdbmysql.env
+    links:
+       - server:server
+    healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+     interval: 10s
+     timeout: 5s
+     retries: 3
+     start_period: 30s
+    ports:
+     - "8080:8080"
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     #- /etc/timezone:/etc/timezone:ro
+     - ./zbx_data/etc/nginx/sites-available/:/etc/nginx/sites-available/default:rw
+    deploy:
+      <<: *template-deploy
+    networks:
+        net-monitorapp-backend:
+          aliases:
+           - web
+           - zabbix-web
+        net-monitorapp-frontend:
+    stop_grace_period: 10s
+
+  zabbix-agent:
+    hostname: zabbix-agent
+    image: zabbix/zabbix-agent:centos-5.2.0
+    ports:
+     - "10050:10050"
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     #- /etc/timezone:/etc/timezone:ro
+     - ./zbx_data/etc/zabbix/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
+     - ./zbx_data/var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
+     - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
+     - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+    links:
+       - server:server
+    env_file:
+     - ./envs/zbxagent.env
+    privileged: true
+    pid: "host"
+    networks:
+        net-monitorapp-backend:
+          aliases:
+           - zabbix-agent
+           - zabbix-agent-passive
+           - zabbix-agent-alpine
+    stop_grace_period: 20s
+
+networks:
+    net-monitorapp-backend:
+        driver: overlay
+        driver_opts:
+            com.docker.network.enable_ipv6: "false"
+        internal: true
+        ipam:
+          driver: default
+          config:
+          - subnet: 172.16.238.0/24
+    net-monitorapp-frontend:
+        driver: overlay
+        driver_opts:
+            com.docker.network.enable_ipv6: "false"
+        ipam:
+            driver: default
+            config:
+            - subnet: 172.16.239.0/24
