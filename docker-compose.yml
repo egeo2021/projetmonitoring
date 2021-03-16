@@ -75,12 +75,12 @@ services:
     env_file:
      - ./envs/zbxproxy.env
     networks:
-     zbx_net_backend:
-      aliases:
-       - zabbix-proxy-sqlite3
-       - zabbix-proxy-centos-sqlite3
-       - zabbix-proxy-sqlite3-centos
-      zbx_net_frontend:
+        net-monitorapp-backend:
+          aliases:
+           - zabbix-proxy-sqlite3
+           - zabbix-proxy-centos-sqlite3
+           - zabbix-proxy-sqlite3-centos
+        net-monitorapp-frontend:
     stop_grace_period: 30s
 
   zabbix-web:
@@ -93,7 +93,7 @@ services:
      - ./envs/zbxfrontend.env
      - ./envs/zbxdbmysql.env
     links:
-       - server:server
+       - zabbix-server:zabbix-server
     healthcheck:
      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
      interval: 10s
@@ -130,7 +130,7 @@ services:
      - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
      - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
     links:
-       - server:server
+       - zabbix-server:zabbix-server
     env_file:
      - ./envs/zbxagent.env
     privileged: true
