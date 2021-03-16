@@ -74,6 +74,17 @@ Esse laboratorio foi utilizado um Debian 10
   $ vim envs/zbxagent.env
   ```
 
+- Options for Zabbix Proxy
+  ```sh
+  $ vim envs/zbxproxy.env
+  ```
+  
+## Build Imagens locais
+Crie as imagens locais, nesse projeto a imagem do proxy é modificada, e o seu build é feito local.
+  ```sh
+  docker-compose build
+  ```
+
 ## Deploy Stack Monitor
 
 [Deploy Stack Monitor](steps/4_deploy_stack_monitor.md)
