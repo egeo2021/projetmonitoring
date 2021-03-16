@@ -105,7 +105,7 @@ RUN set -eux && \
             openldap-devel \
             sqlite-devel \
             git \
-            unixODBC-devel && \
+            unixODBC-devel \
             mariadb-connector-odbc.x86_64 && \
     cd /tmp/ && \
     git clone ${ZBX_SOURCES} --branch ${ZBX_VERSION} --depth 1 --single-branch zabbix-${ZBX_VERSION} && \
