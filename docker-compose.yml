@@ -48,6 +48,41 @@ services:
             - server
     restart: always
 
+  zabbix-proxy-sqlite3:
+    build:
+     context: ./proxy-sqlite3/centos
+     cache_from:
+      - centos:centos8
+    image: zabbix-proxy-sqlite3:centos-local
+    ports:
+      - "10061:10051"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      #- /etc/timezone:/etc/timezone:ro 
+      - ./zbx_data/usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - ./zbx_data/var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
+      - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
+      - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+      - ./zbx_data/var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
+    deploy:
+     resources:
+      limits:
+        cpus: '0.70'
+        memory: 512M
+      reservations:
+        cpus: '0.3'
+        memory: 256M
+    env_file:
+     - ./envs/zbxproxy.env
+    networks:
+     zbx_net_backend:
+      aliases:
+       - zabbix-proxy-sqlite3
+       - zabbix-proxy-centos-sqlite3
+       - zabbix-proxy-sqlite3-centos
+      zbx_net_frontend:
+    stop_grace_period: 30s
+
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:centos-5.2.0
     hostname: web
