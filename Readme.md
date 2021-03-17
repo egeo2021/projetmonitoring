@@ -91,3 +91,5 @@ Crie as imagens locais, nesse projeto a imagem do proxy é modificada, e o seu b
   ```sh  
   $ docker stack deploy -c docker-compose.yml monitor
   ```
+## Apos preparaçao do ambiente, poderá acessar as Tarefas concluidas.
+[Tarefas](Desafios/Tarefas.md)

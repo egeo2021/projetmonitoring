@@ -194,7 +194,17 @@ mysql -u root -p
 create database zabbix character set utf8 collate utf8_bin;
 create user 'zabbix'@'%' identified with mysql_native_password by 'ZaBBix2021!';
 grant all privileges on zabbix.* to 'zabbix'@'%';
+flush privileges;
 ```
+
+## Criar usuarios para monitoramento OBDC
+```bash
+CREATE USER 'zbx_monitor'@'%' IDENTIFIED BY 'ZaBBix2021!';
+GRANT REPLICATION CLIENT,PROCESS,SHOW DATABASES,SUPER,REPLICATION CLIENT,SHOW VIEW ON *.* TO 'zbx_monitor'@'%';
+flush privileges;
+exit
+```
+
 
 `character set utf8 - Suporte para multilingal
 `collate utf8_bin - suporte a case sensitiveness para os dados guardados`
