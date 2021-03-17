@@ -94,10 +94,15 @@ Serviço consiste em dois servidores rodando no Azure, um para aplicação e out
 		 1.  Definição de responsabilidades, quem será responsavel pela homologacao quando o monitoramento for entregue.
 	   2. Cada ponto entregavel do monitoramento, será entregue de x em x dias, e a partir da data de entrega, a cliente tem x dias para retorno e solicitação de melhorias.
 
-5)
+5) Tarefa: A equipe de desenvolvimento XPTO deseja monitorar aplicação web de votação, composta de......
+• Frontend
+R: Para frontend, monitoramento utilizando monitoramento web (websenarios), verificando tempo de resposta para cada processo (visualização e simulação de envio de votos), com isso é possivel identificar lentidão nos processos envolvendo o frontend (tempo de resposta), codigos http de retorno e velocidade de acesso.
+• Backend
+R: Depende do ambiente, se for atraves de uma API, é possivel utilizar httpagent para verificar se os dados estão sendo atualizados, status de processo e etcs.
+• Banco de dados
+R: Utilizaria monitoramento de banco de dados, solicitaria a equipe de desenvolvimento querys para verificar cada opção, com as metricas necessarias criaria os limites, triggers, necessarias para identificar possiveis problemas apresentadas na solução.
 
-6) Determinada aplicação retorna dados apenas no formato YAML conforme exemplo abaixo. Colete esses 
-dados e crie alerta para o campo status diferente de OK.
+6) Determinada aplicação retorna dados apenas no formato YAML conforme exemplo abaixo. Colete esses dados e crie alerta para o campo status diferente de OK.
 
 
 7) Monitore os acessos ao webserver do frontend do zabbix (através da página de status do webserver 
