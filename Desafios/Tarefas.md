@@ -1,6 +1,6 @@
 # Tarefas
 
-2)
+2) Ambiente construido em Docker-Swarm:
 
 * Customizar healthcheck de uma das imagens (ex: frontend ou server ou proxy):
 
@@ -124,11 +124,15 @@ server accepts handled requests
 Reading: 0 Writing: 1 Waiting: 5 
 ```
 No frontend do zabbix, crie um novo host, na interface, em DNS name, inclua o nome do serviço do frontend, "zabbix-web", e em Connect to altere para DNS, a conexão será feita por DNS e não por IP. Na aba Template pesquise pelo Template "Nginx by HTTP" e por fim, na aba Macros, Clique no botão "Inherited and host macros", para herdar as macros do template e globais, altere a macro {$NGINX.STUB_STATUS.PORT} para porta 8080, conforme as prints em anexo.
-Cadastro do host
+
+* Cadastro do host
 ![alt tag](img/tarefa7img1.jpg)
-Vincular Template
+
+* Vincular Template, Nome do template : Nginx by HTTP
 ![alt tag](img/tarefa7img2.jpg)
-Alterar Macros
+
+* Alterar Macros
 ![alt tag](img/tarefa7img3.jpg)
-Aguarde Coleta
+
+* Aguarde Coleta
 ![alt tag](img/tarefa7img4.jpg)
