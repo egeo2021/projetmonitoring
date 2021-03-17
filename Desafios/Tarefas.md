@@ -115,7 +115,7 @@ Criado bind no volume do serviço zabbix-web, para mapeamento do nginx.conf (zbx
 }
 ```
 
-Assim quando é acessado a url http://zabbix-web:8080/basic_status, é apresentado um pequeno status do nginx.
+Assim quando é acessado a url http://zabbix-web:8080/basic_status (dentro do container) ou http://IPDOCKERHOST:8080/basic_status (externo), é apresentado um pequeno status do nginx.
 
 ```bash
 Active connections: 6 
