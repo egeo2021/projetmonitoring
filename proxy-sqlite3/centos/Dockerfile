@@ -105,8 +105,7 @@ RUN set -eux && \
             openldap-devel \
             sqlite-devel \
             git \
-            unixODBC-devel \
-            mariadb-connector-odbc.x86_64 && \
+            unixODBC-devel && \
     cd /tmp/ && \
     git clone ${ZBX_SOURCES} --branch ${ZBX_VERSION} --depth 1 --single-branch zabbix-${ZBX_VERSION} && \
     cd /tmp/zabbix-${ZBX_VERSION} && \
@@ -162,7 +161,18 @@ COPY ["docker-entrypoint.sh", "/usr/bin/"]
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/bin/docker-entrypoint.sh"]
 
-USER 1997
+USER root
 
+WORKDIR /
+
+RUN dnf update -y && dnf install -y wget && dnf install -y freetds-devel && \
+    dnf install -y mariadb-connector-odbc.x86_64 && \
+    dnf -y clean all && \
+    rm -rf /var/cache/yum /var/lib/yum/yumdb/* /usr/lib/udev/hwdb.d/* && \
+    rm -rf /var/cache/dnf /etc/udev/hwdb.bin /root/.pki
+
+WORKDIR /var/lib/zabbix
+
+USER 1997
 
 CMD ["/usr/sbin/zabbix_proxy", "--foreground", "-c", "/etc/zabbix/zabbix_proxy.conf"]
