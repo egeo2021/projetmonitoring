@@ -102,7 +102,7 @@ R: Depende do ambiente, se for atraves de uma API, é possivel utilizar httpagen
 • Banco de dados
 R: Utilizaria monitoramento de banco de dados, solicitaria a equipe de desenvolvimento querys para verificar cada opção, com as metricas necessarias criaria os limites, triggers, necessarias para identificar possiveis problemas apresentadas na solução.
 
-6) Determinada aplicação retorna dados apenas no formato YAML conforme exemplo abaixo. Colete esses dados e crie alerta para o campo status diferente de OK.
+6) NÃO ENTREGUE
 
 
 7) Monitore os acessos ao webserver do frontend do zabbix (através da página de status do webserver 
