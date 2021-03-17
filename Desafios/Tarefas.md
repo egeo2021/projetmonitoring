@@ -36,11 +36,11 @@ Cadastre o proxy no Frontend do zabbix para realizar os teste.
 	* No zbxproxy.env altera o variavel ZBX_HOSTNAME=ZBXPROXY-{{.Node.Hostname}}, isso setará um hostname no proxy conforme o hostname do Docker Host
     * Há possibilidade tambem de utilzar Variaveis do Jenkins para preenchimento dos das variaveis DB_SERVER_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE, ZBX_SERVER_NAME ou qualquer outra da stack, facilitando assim o deploy em diferentes ambientes.
 
-3) Crie uma monitoração para serviço qualquer para ser monitorado por uma instância de zabbix 5.2 
-(pode ser a instância criada no exercício 1)
+3) Crie uma monitoração para serviço qualquer para ser monitorado por uma instância de zabbix 5.2
+
 	* Monitoramento da base de dados (Mysql) do Zabbix via ODBC, atraves de Connection String, customizado a imagem do proxy para ser instalado o drive de conexão do mysql e realizar o monitoramento do banco.
 
-	Importe o template em anexo  ** "Template DB MySQL by ODBC_Desafio.yaml" disponivel dentro da pasta Templates ** 
+	Importe o template em anexo  Template DB MySQL by ODBC_Desafio.yaml disponivel dentro da pasta Templates 
 	Obs: ## Template baseado no Default do Zabbix, realizado apenas as alterações para monitoramento sem a necessidade de configurar o odbc.ini.
 	
   | Marcro           | Descricao             |
@@ -52,47 +52,47 @@ Cadastre o proxy no Frontend do zabbix para realizar os teste.
   | {$MYSQL.PASSWORD}| Senha do usuario para conexão ao banco |
   | {$MYSQL.SERVER}  | IP ou DNS do mysql |
   
-  Tipo de monitoramento: "Database Monitor";
+  Tipo de monitoramento: "Database Monitor"
   Responsavel por monitorar a saude do Mysql e tamanho da bases do Mysql. Utilizando connection String, recurso recente do zabbix.
-
-	Importe o Template: Configuration > Templates > Canto superior direito > "Import", Importe o template em anexo (Template DB MySQL by ODBC_Desafio.yaml)
-	![alt tag](img/tarefa3img0.jpg)
-	Crie um host para o banco de dados, informe em interface, o IP do seu Banco. 
+ 
+ * Importe o Template: Configuration > Templates > Canto superior direito > Import, Importe o template em anexo (Template DB MySQL by ODBC_Desafio.yaml)	
+	![alt tag](img/tarefa3img0.jpg)	
+* Crie um host para o banco de dados, informe em interface, o IP do seu Banco. 
 	![alt tag](img/tarefa3img1.jpg)
-	Vincule o template importado: Template DB MySQL by ODBC_Desafio.yaml
+* Vincule o template importado: Template DB MySQL by ODBC_Desafio.yaml
 	![alt tag](img/tarefa3img2.jpg)
-	Altere as macros conforme descrito acima. Se seguiu esta documentação, será preciso apenas alterar o IP do servidor do banco de dados.
+* Altere as macros conforme descrito acima. Se seguiu esta documentação, será preciso apenas alterar o IP do servidor do banco de dados.
 	![alt tag](img/tarefa3img3.jpg)
-	Aguarde Coleta, para verificar pode ir em Monitoring > Latest Data > Selecione o host criado e aguarde a coleta.
+* Aguarde Coleta, para verificar pode ir em Monitoring > Latest Data > Selecione o host criado e aguarde a coleta.
 	![alt tag](img/tarefa3img4.jpg)
 
 
 4) A equipe de desenvolvimento XPTO deseja monitorar aplicação web de votação, composta de:
-	 ** Estudo de Caso: Sistema de Gestão vendas de Passagem. **
+	 **Estudo de Caso: Sistema de Gestão vendas de Passagem.** 
 	Reunião de Alinhamento com a equipe de Dev, equipe suporte do sistema e supervisores, para conhecimento da demanda e entendimento do processo atual.
 	Pontos discutidos:
 	* Do processo:
-		Serviço consiste em dois servidores rodando no Azure, um para aplicação e outro para banco. Os PDV (agencias), conectam via um sistema web (https://www.vendaspassagem.com.br/vendas, atraves de loguin e senha, para realização do processo de vendas do bilhete, reserva de poltrona e vendas clientes. Todas as vendas são sincronizadas para o ERP da empresa atraves de uma api disponivel em https://www.vendaspassagem.com.br/web/api/v2, onde é informado via json se o horario da ultima sincronização e o status.
+Serviço consiste em dois servidores rodando no Azure, um para aplicação e outro para banco. Os PDV (agencias), conectam via um sistema web (https://www.vendaspassagem.com.br/vendas, atraves de loguin e senha, para realização do processo de vendas do bilhete, reserva de poltrona e vendas clientes. Todas as vendas são sincronizadas para o ERP da empresa atraves de uma api disponivel em https://www.vendaspassagem.com.br/web/api/v2, onde é informado via json se o horario da ultima sincronização e o status.
 	* Sistema está em que local?
-		R: Sistema rodando em dois servidores hospedados no Azure.
+		**R:** Sistema rodando em dois servidores hospedados no Azure.
 	* Atualmente quais as metricas são monitoradas no sistema.
-		R: Tempo de resposta para cada passo na venda da passagem da url, é realizado manualmente vendo o historico do navegador;
-		Disponibilidade do sistema, disponibilidade do sistema de vendas, Latencia ( Se variar muito, a conexão é perdida e o processo é interrompido); Utilizando o MTR (WinMTR) e ping.
-		Relatorios de uso de recursos do Azure, para saber consumo de memoria, processamento, disco e banco;
+		**R:** Tempo de resposta para cada passo na venda da passagem da url, é realizado manualmente vendo o historico do navegador; Disponibilidade do sistema, disponibilidade do sistema de vendas, Latencia ( Se variar muito, a conexão é perdida e o processo é interrompido); Utilizando o MTR (WinMTR) e ping. Relatorios de uso de recursos do Azure, para saber consumo de memoria, processamento, disco e banco;
+		
 	* Quais os ativos que envolvem a solução:
-		Servidores Azure, estacoes e internet de pontos de vendas.
-	Entregaveis pelo monitoramento:
-	* Monitormaneto da Latencia e disponibilidade do serviço web;
-	* Disponibilidade de cada passo no processo de vendas;
-	* Monitoramento de recursos do Azure, atraves de consultas da API;
-	* Monitoramento de saltos do MTR.
-	* Monitoramento dos PDVs.
-	* Saude dos bancos de dados.
-	* Integração com o ERP principal da empresa. Consulta na API para saber o status da ultima sincronização realizada.
+**R:** Servidores Azure, estacoes e internet de pontos de vendas.
 
-	Prazo:
-	* Definição de responsabilidades, quem será responsavel pela homologacao quando o monitoramento for entregue.
-	* Cada ponto entregavel do monitoramento, será entregue de x em x dias, e a partir da data de entrega, a cliente tem x dias para retorno e solicitação de melhorias.
+	* Entregaveis pelo monitoramento:
+		 1. Monitormaneto da Latencia e disponibilidade do serviço web;
+		 2. Disponibilidade de cada passo no processo de vendas; 	Monitoramento de recursos do Azure, atraves de consultas da API;
+		 3. Monitoramento de saltos do MTR. 	
+		 4.  Monitoramento dos PDVs. 	
+		 5.  Saude dos bancos de dados. 	
+		 6. Integração com o ERP principal da empresa.
+	     7. Consulta na API para saber o status da ultima sincronização realizada.
+
+	* Prazo:
+		 1.  Definição de responsabilidades, quem será responsavel pela homologacao quando o monitoramento for entregue.
+	   2. Cada ponto entregavel do monitoramento, será entregue de x em x dias, e a partir da data de entrega, a cliente tem x dias para retorno e solicitação de melhorias.
 
 5)
 
@@ -109,7 +109,9 @@ Criado bind no volume do serviço zabbix-web, para mapeamento do nginx.conf (zbx
         }
 }
 ```
+
 Assim quando é acessado a url http://zabbix-web:8080/basic_status, é apresentado um pequeno status do nginx.
+
 ```bash
 Active connections: 6 
 server accepts handled requests
@@ -125,7 +127,3 @@ Alterar Macros
 ![alt tag](img/tarefa7img3.jpg)
 Aguarde Coleta
 ![alt tag](img/tarefa7img4.jpg)
-
-
-
-
