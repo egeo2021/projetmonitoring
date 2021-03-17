@@ -38,15 +38,52 @@ Cadastre o proxy no Frontend do zabbix para realizar os teste.
 
 3) Crie uma monitoração para serviço qualquer para ser monitorado por uma instância de zabbix 5.2 
 (pode ser a instância criada no exercício 1)
-Monitoramento de logs do housekeeping do Zabbix, auxilio para identificar quantidade de registros excluidos a cada housekeeping executado.
+	* Monitoramento da base de dados (Mysql) do Zabbix via ODBC, atraves de Connection String, customizado a imagem do proxy para ser instalado o drive de conexão do mysql e realizar o monitoramento do banco.
 
-Necessario, utilizar dois terminais.
+	Importe o template em anexo  ** "Template DB MySQL by ODBC_Desafio" disponivel dentro da pasta Templates ** 
+	Obs: ## Template baseado no Default do Zabbix, realizado apenas as alterações para monitoramento sem a necessidade de configurar o odbc.ini.
+	
+  | Marcro           | Descricao             |
+  | ---------------- | -------------------- |
+  | {$MYSQL.DATABASE}| Informa o nome da base |
+  | {$MYSQL.DRIVER}  | driver mariadb - /usr/lib64/libmaodbc.so  |
+  | {$MYSQL.DSN}     | Se necessario pode informar o DSN, neste exemplo não utilizamos.   |
+  | {$MYSQL.USER}    | Usuario de monitoramento para conexão ao banco |
+  | {$MYSQL.PASSWORD}| Senha do usuario para conexão ao banco |
+  | {$MYSQL.SERVER}  | IP ou DNS do mysql |
+	
 
-No frontend, acesse Menu > Configuration > Hosts, Clique no host Zabbix server e altere a interface para ser conectado atraves do DNS, em DNS name, altere para "zabbix-agent".
+4) A equipe de desenvolvimento XPTO deseja monitorar aplicação web de votação, composta de:
+	 ** Estudo de Caso: Sistema de Gestão vendas de Passagem. **
+	Reunião de Alinhamento com a equipe de Dev, equipe suporte do sistema e supervisores, para conhecimento da demanda e entendimento do processo atual.
+	Pontos discutidos:
+	* Do processo:
+		Serviço consiste em dois servidores rodando no Azure, um para aplicação e outro para banco. Os PDV (agencias), conectam via um sistema web (https://www.vendaspassagem.com.br/vendas, atraves de loguin e senha, para realização do processo de vendas do bilhete, reserva de poltrona e vendas clientes. Todas as vendas são sincronizadas para o ERP da empresa atraves de uma api disponivel em https://www.vendaspassagem.com.br/web/api/v2, onde é informado via json se o horario da ultima sincronização e o status.
+	* Sistema está em que local?
+		R: Sistema rodando em dois servidores hospedados no Azure.
+	* Atualmente quais as metricas são monitoradas no sistema.
+		R: Tempo de resposta para cada passo na venda da passagem da url, é realizado manualmente vendo o historico do navegador;
+		Disponibilidade do sistema, disponibilidade do sistema de vendas, Latencia ( Se variar muito, a conexão é perdida e o processo é interrompido); Utilizando o MTR (WinMTR) e ping.
+		Relatorios de uso de recursos do Azure, para saber consumo de memoria, processamento, disco e banco;
+	* Quais os ativos que envolvem a solução:
+		Servidores Azure, estacoes e internet de pontos de vendas.
+	Entregaveis pelo monitoramento:
+	* Monitormaneto da Latencia e disponibilidade do serviço web;
+	* Disponibilidade de cada passo no processo de vendas;
+	* Monitoramento de recursos do Azure, atraves de consultas da API;
+	* Monitoramento de saltos do MTR.
+	* Monitoramento dos PDVs.
+	* Saude dos bancos de dados.
+	* Integração com o ERP principal da empresa. Consulta na API para saber o status da ultima sincronização realizada.
 
-Importe o template em anexo 
+	Prazo:
+	* Definição de responsabilidades, quem será responsavel pela homologacao quando o monitoramento for entregue.
+	* Cada ponto entregavel do monitoramento, será entregue de x em x dias, e a partir da data de entrega, a cliente tem x dias para retorno e solicitação de melhorias.
 
-5) A equipe de desenvolvimento XPTO deseja monitorar aplicação web de votação, composta de:
+5)
+
+6) Determinada aplicação retorna dados apenas no formato YAML conforme exemplo abaixo. Colete esses 
+dados e crie alerta para o campo status diferente de OK.
 
 
 7) Monitore os acessos ao webserver do frontend do zabbix (através da página de status do webserver 
