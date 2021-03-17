@@ -48,6 +48,41 @@ services:
             - server
     restart: always
 
+  zabbix-proxy-sqlite3:
+    build:
+     context: ./proxy-sqlite3/centos
+     cache_from:
+      - centos:centos8
+    image: zabbix-proxy-sqlite3:centos-local
+    ports:
+      - "10061:10051"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      #- /etc/timezone:/etc/timezone:ro 
+      - ./zbx_data/usr/lib/zabbix/externalscripts:/usr/lib/zabbix/externalscripts:ro
+      - ./zbx_data/var/lib/zabbix/modules:/var/lib/zabbix/modules:ro
+      - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
+      - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+      - ./zbx_data/var/lib/zabbix/mibs:/var/lib/zabbix/mibs:ro
+    deploy:
+     resources:
+      limits:
+        cpus: '0.70'
+        memory: 512M
+      reservations:
+        cpus: '0.3'
+        memory: 256M
+    env_file:
+     - ./envs/zbxproxy.env
+    networks:
+        net-monitorapp-backend:
+          aliases:
+           - zabbix-proxy-sqlite3
+           - zabbix-proxy-centos-sqlite3
+           - zabbix-proxy-sqlite3-centos
+        net-monitorapp-frontend:
+    stop_grace_period: 30s
+
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:centos-5.2.0
     hostname: web
@@ -58,7 +93,7 @@ services:
      - ./envs/zbxfrontend.env
      - ./envs/zbxdbmysql.env
     links:
-       - server:server
+       - zabbix-server:zabbix-server
     healthcheck:
      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
      interval: 10s
@@ -70,7 +105,7 @@ services:
     volumes:
      - /etc/localtime:/etc/localtime:ro
      #- /etc/timezone:/etc/timezone:ro
-     - ./zbx_data/etc/nginx/sites-available/:/etc/nginx/sites-available/default:rw
+     - ./zbx_data/etc/nginx/zabbix/nginx.conf:/etc/zabbix/nginx.conf:ro
     deploy:
       <<: *template-deploy
     networks:
@@ -87,6 +122,7 @@ services:
     ports:
      - "10050:10050"
     volumes:
+     - /tmp/output.log:/tmp/output.log:ro
      - /etc/localtime:/etc/localtime:ro
      #- /etc/timezone:/etc/timezone:ro
      - ./zbx_data/etc/zabbix/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:ro
@@ -94,7 +130,7 @@ services:
      - ./zbx_data/var/lib/zabbix/enc:/var/lib/zabbix/enc:ro
      - ./zbx_data/var/lib/zabbix/ssh_keys:/var/lib/zabbix/ssh_keys:ro
     links:
-       - server:server
+       - zabbix-server:zabbix-server
     env_file:
      - ./envs/zbxagent.env
     privileged: true
