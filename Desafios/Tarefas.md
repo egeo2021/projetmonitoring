@@ -40,7 +40,7 @@ Cadastre o proxy no Frontend do zabbix para realizar os teste.
 (pode ser a instância criada no exercício 1)
 	* Monitoramento da base de dados (Mysql) do Zabbix via ODBC, atraves de Connection String, customizado a imagem do proxy para ser instalado o drive de conexão do mysql e realizar o monitoramento do banco.
 
-	Importe o template em anexo  ** "Template DB MySQL by ODBC_Desafio" disponivel dentro da pasta Templates ** 
+	Importe o template em anexo  ** "Template DB MySQL by ODBC_Desafio.yaml" disponivel dentro da pasta Templates ** 
 	Obs: ## Template baseado no Default do Zabbix, realizado apenas as alterações para monitoramento sem a necessidade de configurar o odbc.ini.
 	
   | Marcro           | Descricao             |
@@ -51,7 +51,21 @@ Cadastre o proxy no Frontend do zabbix para realizar os teste.
   | {$MYSQL.USER}    | Usuario de monitoramento para conexão ao banco |
   | {$MYSQL.PASSWORD}| Senha do usuario para conexão ao banco |
   | {$MYSQL.SERVER}  | IP ou DNS do mysql |
-	
+  
+  Tipo de monitoramento: "Database Monitor";
+  Responsavel por monitorar a saude do Mysql e tamanho da bases do Mysql. Utilizando connection String, recurso recente do zabbix.
+
+	Importe o Template: Configuration > Templates > Canto superior direito > "Import", Importe o template em anexo (Template DB MySQL by ODBC_Desafio.yaml)
+	![alt tag](img/tarefa3img0.jpg)
+	Crie um host para o banco de dados, informe em interface, o IP do seu Banco. 
+	![alt tag](img/tarefa3img1.jpg)
+	Vincule o template importado: Template DB MySQL by ODBC_Desafio.yaml
+	![alt tag](img/tarefa3img2.jpg)
+	Altere as macros conforme descrito acima. Se seguiu esta documentação, será preciso apenas alterar o IP do servidor do banco de dados.
+	![alt tag](img/tarefa3img3.jpg)
+	Aguarde Coleta, para verificar pode ir em Monitoring > Latest Data > Selecione o host criado e aguarde a coleta.
+	![alt tag](img/tarefa3img4.jpg)
+
 
 4) A equipe de desenvolvimento XPTO deseja monitorar aplicação web de votação, composta de:
 	 ** Estudo de Caso: Sistema de Gestão vendas de Passagem. **
@@ -104,13 +118,13 @@ Reading: 0 Writing: 1 Waiting: 5
 ```
 No frontend do zabbix, crie um novo host, na interface, em DNS name, inclua o nome do serviço do frontend, "zabbix-web", e em Connect to altere para DNS, a conexão será feita por DNS e não por IP. Na aba Template pesquise pelo Template "Nginx by HTTP" e por fim, na aba Macros, Clique no botão "Inherited and host macros", para herdar as macros do template e globais, altere a macro {$NGINX.STUB_STATUS.PORT} para porta 8080, conforme as prints em anexo.
 Cadastro do host
-![alt tag](/img/tarefa7img1.jpg)
+![alt tag](img/tarefa7img1.jpg)
 Vincular Template
-![alt tag](/img/tarefa7img2.jpg)
+![alt tag](img/tarefa7img2.jpg)
 Alterar Macros
-![alt tag](/img/tarefa7img3.jpg)
+![alt tag](img/tarefa7img3.jpg)
 Aguarde Coleta
-![alt tag](/img/tarefa7img4.jpg)
+![alt tag](img/tarefa7img4.jpg)
 
 
 
